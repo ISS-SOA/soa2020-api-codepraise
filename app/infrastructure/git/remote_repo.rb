@@ -21,12 +21,12 @@ module CodePraise
         Base64.urlsafe_encode64(Digest::SHA256.digest(@git_url))
       end
 
-      def local_clone(path)
+      def local_clone(path, &output_handler)
         CodePraise::Git::Command.new
           .clone(git_url, path)
           .with_std_error
           .with_progress
-          .capture_call { |line| yield line }
+          .capture_call(&output_handler)
       end
     end
   end

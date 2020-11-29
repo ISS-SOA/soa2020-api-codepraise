@@ -8,21 +8,15 @@ module CodePraise
     class AddProject
       include Dry::Transaction
 
-      step :parse_url
       step :find_project
       step :store_project
 
       private
 
-      def parse_url(input)
-        if input.success?
-          owner_name, project_name = input[:remote_url].split('/')[-2..-1]
-          Success(owner_name: owner_name, project_name: project_name)
-        else
-          Failure("URL #{input.errors.messages.first}")
-        end
-      end
+      DB_ERR_MSG = 'Having trouble accessing the database'
+      GH_NOT_FOUND_MSG = 'Could not find that project on Github'
 
+      # Expects input[:owner_name] and input[:project_name]
       def find_project(input)
         if (project = project_in_database(input))
           input[:local_project] = project
@@ -30,8 +24,8 @@ module CodePraise
           input[:remote_project] = project_from_github(input)
         end
         Success(input)
-      rescue StandardError => error
-        Failure(error.to_s)
+      rescue StandardError => e
+        Failure(Response::ApiResult.new(status: :not_found, message: e.to_s))
       end
 
       def store_project(input)
@@ -41,20 +35,20 @@ module CodePraise
           else
             input[:local_project]
           end
-        Success(project)
-      rescue StandardError => error
-        puts error.backtrace.join("\n")
-        Failure('Having trouble accessing the database')
+        Success(Response::ApiResult.new(status: :created, message: project))
+      rescue StandardError => e
+        puts e.backtrace.join("\n")
+        Failure(Response::ApiResult.new(status: :internal_error, message: DB_ERR_MSG))
       end
 
-      # following are support methods that other services could use
+      # Support methods for steps
 
       def project_from_github(input)
         Github::ProjectMapper
           .new(App.config.GITHUB_TOKEN)
           .find(input[:owner_name], input[:project_name])
       rescue StandardError
-        raise 'Could not find that project on Github'
+        raise GH_NOT_FOUND_MSG
       end
 
       def project_in_database(input)

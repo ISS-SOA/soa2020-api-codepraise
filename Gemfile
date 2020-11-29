@@ -4,7 +4,8 @@ source 'https://rubygems.org'
 ruby File.read('.ruby-version').strip
 
 # PRESENTATION LAYER
-gem 'slim', '~> 3.0'
+gem 'multi_json'
+gem 'roar'
 
 # APPLICATION LAYER
 # Web application related
@@ -29,7 +30,6 @@ gem 'http', '~> 4.0'
 
 # Database
 gem 'hirb', '~> 0.7'
-gem 'hirb-unicode'
 gem 'sequel', '~> 5.0'
 
 group :development, :test do
@@ -49,10 +49,6 @@ group :test do
   gem 'simplecov', '~> 0'
   gem 'vcr', '~> 6.0'
   gem 'webmock', '~> 3.0'
-
-  gem 'headless', '~> 2.3'
-  gem 'page-object', '~> 2.2'
-  gem 'watir', '~> 6.17'
 end
 
 group :development, :test do
@@ -70,8 +66,9 @@ end
 group :development, :test do
   gem 'flog'
   gem 'reek'
-  gem 'rubocop'
+  gem 'rubocop', '~> 1.4'
 end
 
 # UTILITIES
+gem 'rack-test' # can also be used to diagnose production
 gem 'rake', '~> 13.0'

@@ -8,29 +8,29 @@ module CodePraise
     class AppraiseProject
       include Dry::Transaction
 
-      step :ensure_watched_project
       step :retrieve_remote_project
       step :clone_remote
       step :appraise_contributions
 
       private
 
-      def ensure_watched_project(input)
-        if input[:watched_list].include? input[:requested].project_fullname
-          Success(input)
-        else
-          Failure('Please first request this project to be added to your list')
-        end
-      end
+      NO_PROJ_ERR = 'Project not found'
+      DB_ERR = 'Having trouble accessing the database'
+      CLONE_ERR = 'Could not clone this project'
+      NO_FOLDER_ERR = 'Could not find that folder'
 
       def retrieve_remote_project(input)
         input[:project] = Repository::For.klass(Entity::Project).find_full_name(
           input[:requested].owner_name, input[:requested].project_name
         )
 
-        input[:project] ? Success(input) : Failure('Project not found')
+        if input[:project]
+          Success(input)
+        else
+          Failure(Response::ApiResult.new(status: :not_found, message: NO_PROJ_ERR))
+        end
       rescue StandardError
-        Failure('Having trouble accessing the database')
+        Failure(Response::ApiResult.new(status: :internal_error, message: DB_ERR))
       end
 
       def clone_remote(input)
@@ -40,16 +40,19 @@ module CodePraise
         Success(input.merge(gitrepo: gitrepo))
       rescue StandardError
         puts error.backtrace.join("\n")
-        Failure('Could not clone this project')
+        Failure(Response::ApiResult.new(status: :internal_error, message: CLONE_ERR))
       end
 
       def appraise_contributions(input)
         input[:folder] = Mapper::Contributions
           .new(input[:gitrepo]).for_folder(input[:requested].folder_name)
 
-        Success(input)
+        Response::ProjectFolderContributions.new(input[:project], input[:folder])
+          .then do |appraisal|
+            Success(Response::ApiResult.new(status: :ok, message: appraisal))
+          end
       rescue StandardError
-        Failure('Could not find that folder')
+        Failure(Response::ApiResult.new(status: :not_found, message: NO_FOLDER_ERR))
       end
     end
   end

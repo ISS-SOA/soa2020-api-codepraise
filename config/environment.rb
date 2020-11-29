@@ -13,14 +13,12 @@ module CodePraise
     Econfig.env = environment.to_s
     Econfig.root = '.'
 
-    use Rack::Session::Cookie, secret: config.SESSION_SECRET
-
     configure :development, :test, :app_test do
       ENV['DATABASE_URL'] = "sqlite://#{config.DB_FILENAME}"
     end
 
     configure :app_test do
-      require_relative '../spec/helpers/vcr_helper.rb'
+      require_relative '../spec/helpers/vcr_helper'
       VcrHelper.setup_vcr
       VcrHelper.configure_vcr_for_github(recording: :none)
     end
