@@ -13,8 +13,6 @@ module CodePraise
     Econfig.env = environment.to_s
     Econfig.root = '.'
 
-    use Rack::Session::Cookie, secret: config.SESSION_SECRET
-
     configure :development, :test, :app_test do
       ENV['DATABASE_URL'] = "sqlite://#{config.DB_FILENAME}"
     end
