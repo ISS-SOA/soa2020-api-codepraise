@@ -1771,7 +1771,7 @@
           null,
           null,
           1,
-          4,
+          5,
           null
         ]
       },
@@ -1799,6 +1799,20 @@
           null,
           26,
           null,
+          null,
+          null,
+          null
+        ]
+      },
+      "/Users/soumyaray/Sync/Dropbox/ossdev/classes/SOA-class/soa2020/api-codepraise2020/app/presentation/responses/openstruct_with_links.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          1,
           null,
           null,
           null
@@ -2592,8 +2606,8 @@
           null,
           1,
           27,
-          1899,
-          1899,
+          1767,
+          1767,
           null,
           null,
           27,
@@ -3161,6 +3175,6 @@
         ]
       }
     },
-    "timestamp": 1607179081
+    "timestamp": 1607182215
   }
 }
