@@ -6,8 +6,7 @@ module CodePraise
   module Mapper
     # Summarizes contributions for an entire folder
     class FolderContributions
-      attr_reader :folder_name
-      attr_reader :contributions_reports
+      attr_reader :folder_name, :contributions_reports
 
       def initialize(folder_name, contributions_reports)
         @folder_name = folder_name
@@ -34,9 +33,9 @@ module CodePraise
           (folders[rel_path(summary.filename)] ||= []) << summary.contributions
         end
 
-        structured.map do |folder, folder_summaries|
-          [folder, add_contributions(folder_summaries)]
-        end.to_h
+        structured.transform_values do |folder_summaries|
+          add_contributions(folder_summaries)
+        end
       end
 
       def base_files
@@ -69,13 +68,13 @@ module CodePraise
 
       def rel_path(filename)
         rel_filename = filename[(folder_prefix_length)..]
-        match = rel_filename.match(%r{(?<folder>[^\/]+)\/.*})
+        match = rel_filename.match(%r{(?<folder>[^/]+)/.*})
         match.nil? ? '' : match[:folder]
       end
 
       def filename_only(filename)
         rel_filename = filename[(folder_prefix_length)..]
-        match = rel_filename.match(%r{(?<subfolder>.*\/)?(?<file>.*)})
+        match = rel_filename.match(%r{(?<subfolder>.*/)?(?<file>.*)})
         match[:file]
       end
     end

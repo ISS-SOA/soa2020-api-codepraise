@@ -381,4 +381,78 @@ http_interactions:
       encoding: UTF-8
       string: '{"message":"Bad credentials","documentation_url":"https://docs.github.com/rest"}'
   recorded_at: Sat, 24 Oct 2020 15:17:05 GMT
+- request:
+    method: get
+    uri: https://api.github.com/repos/0u9awfh4/q03g49sdflkj
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      Authorization:
+      - token <GITHUB_TOKEN>
+      Connection:
+      - close
+      Host:
+      - api.github.com
+      User-Agent:
+      - http.rb/4.4.1
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Date:
+      - Fri, 27 Nov 2020 08:35:29 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '107'
+      Connection:
+      - close
+      Server:
+      - GitHub.com
+      Status:
+      - 404 Not Found
+      X-Oauth-Scopes:
+      - read:user, repo, user:email, workflow
+      X-Accepted-Oauth-Scopes:
+      - repo
+      X-Github-Media-Type:
+      - github.v3; format=json
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4999'
+      X-Ratelimit-Reset:
+      - '1606469729'
+      X-Ratelimit-Used:
+      - '1'
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Used, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes,
+        X-Poll-Interval, X-GitHub-Media-Type, Deprecation, Sunset
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Frame-Options:
+      - deny
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Content-Security-Policy:
+      - default-src 'none'
+      Vary:
+      - Accept-Encoding, Accept, X-Requested-With
+      X-Github-Request-Id:
+      - E441:6F9C:5FBED3:7A7870:5FC0BA50
+    body:
+      encoding: UTF-8
+      string: '{"message":"Not Found","documentation_url":"https://docs.github.com/rest/reference/repos#get-a-repository"}'
+  recorded_at: Fri, 27 Nov 2020 08:35:24 GMT
 recorded_with: VCR 6.0.0

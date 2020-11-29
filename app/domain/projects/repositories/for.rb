@@ -9,7 +9,7 @@ module CodePraise
     class For
       ENTITY_REPOSITORY = {
         Entity::Project => Projects,
-        Entity::Member => Members
+        Entity::Member  => Members
       }.freeze
 
       def self.klass(entity_klass)

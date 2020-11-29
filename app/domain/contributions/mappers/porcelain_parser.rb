@@ -24,7 +24,7 @@ module CodePraise
         line_block = porcelain.split(NEWLINE)
         line_report = {
           'line_num' => parse_first_porcelain_line(line_block[0]),
-          'code' => line_block[-1]
+          'code'     => line_block[-1]
         }
 
         line_block[1..-2].each do |line|

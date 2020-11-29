@@ -31,11 +31,11 @@ end
 
 namespace :run do
   task :dev do
-    sh 'rerun -c "rackup -p 9292"'
+    sh 'rerun -c "rackup -p 9090"'
   end
 
   task :test do
-    sh 'RACK_ENV=test rackup -p 9000'
+    sh 'RACK_ENV=test rackup -p 9090'
   end
 end
 
@@ -112,7 +112,7 @@ namespace :vcr do
 end
 
 namespace :quality do
-  CODE = 'app/'
+  CODE = 'app'
 
   desc 'run all quality checks'
   task :all => [:rubocop, :reek, :flog]
