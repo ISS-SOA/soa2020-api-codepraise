@@ -1,4 +1,4 @@
-# CodePraise Web API [![Build Status](https://travis-ci.org/ISS-SOA/codepraise-api.svg?branch=master)](https://travis-ci.org/ISS-SOA/codepraise-api)
+# CodePraise Web API
 
 Web API that allowsGithub *projects* to be *appraised* for inidividual *contributions* by *members* of a team.
 

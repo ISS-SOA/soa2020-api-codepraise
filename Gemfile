@@ -72,4 +72,3 @@ end
 # UTILITIES
 gem 'rack-test' # can also be used to diagnose production
 gem 'rake', '~> 13.0'
-gem 'travis'

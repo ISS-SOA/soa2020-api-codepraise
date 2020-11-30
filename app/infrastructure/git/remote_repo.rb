@@ -26,7 +26,7 @@ module CodePraise
           .clone(git_url, path)
           .with_std_error
           .with_progress
-          .capture_call(line, &output_handler)
+          .capture_call(&output_handler)
       end
     end
   end
