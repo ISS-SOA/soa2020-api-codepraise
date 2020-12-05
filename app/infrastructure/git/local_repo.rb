@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'fileutils'
-require_relative 'remote_repo.rb'
+require_relative 'remote_repo'
 
 module CodePraise
   module Git
@@ -29,6 +29,8 @@ module CodePraise
         self
       end
 
+      # TODO: simplify this beast of a method. but for now...
+      # rubocop:disable all
       def folder_structure
         raise_unless_setup
         return @folder_structure if @folder_structure
@@ -45,6 +47,7 @@ module CodePraise
 
         @folder_structure
       end
+      # rubocop:enable all
 
       def files
         raise_unless_setup

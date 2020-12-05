@@ -9,6 +9,7 @@ AllCops:
     - '**/*.rb'
   Exclude:
     - _snippets/*
+    - app/infrastructure/git/repostore/**/*
 
 # ignore block length where unavoidable (e.g., framework requires it)
 Metrics/BlockLength:

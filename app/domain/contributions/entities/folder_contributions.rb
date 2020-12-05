@@ -21,6 +21,10 @@ module CodePraise
         files.map(&:line_count).sum
       end
 
+      def total_credits
+        files.map(&:total_credits).sum
+      end
+
       def lines
         files.map(&:lines).reduce(&:+)
       end
@@ -45,13 +49,23 @@ module CodePraise
         end
       end
 
+      def any_subfolders?
+        subfolders.count.positive?
+      end
+
+      def any_base_files?
+        base_files.count.positive?
+      end
+
       def credit_share
         @credit_share ||= files.map(&:credit_share).reduce(&:+)
       end
 
       def contributors
-        credit_share.keys
+        credit_share.contributors
       end
+
+      private
 
       def folder_path
         path.empty? ? path : "#{path}/"

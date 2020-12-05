@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require_relative '../helpers/spec_helper.rb'
+require_relative '../helpers/spec_helper'
+
+CLONE_COMMAND = 'git clone --progress ssh://__.git ./test 2>&1'
+BLAME_COMMAND = 'git blame --line-porcelain test.rb'
 
 describe 'Unit test of git command gateway' do
-  CLONE_COMMAND = 'git clone --progress ssh://__.git ./test 2>&1'
-  BLAME_COMMAND = 'git blame --line-porcelain test.rb'
-
   it 'should make the right clone command' do
     command = CodePraise::Git::Command.new
       .clone('ssh://__.git', './test')

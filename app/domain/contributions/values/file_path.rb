@@ -7,7 +7,7 @@ module CodePraise
     # Value of a file's full path (delegates to String)
     class FilePath < SimpleDelegator
       # rubocop:disable Style/RedundantSelf
-      FILE_PATH_REGEX = %r{(?<directory>.*\/)(?<filename>[^\/]+)}.freeze
+      FILE_PATH_REGEX = %r{(?<directory>.*/)(?<filename>[^/]+)}.freeze
 
       attr_reader :directory, :filename
 
@@ -28,7 +28,7 @@ module CodePraise
         raise(ArgumentError, 'Path mismatch') unless
           self.start_with?(root) || root.empty?
 
-        matches = self.match(%r{(?<folder>^#{root}[^\/]+)[\/]?})
+        matches = self.match(%r{(?<folder>^#{root}[^/]+)/?})
         matches[:folder]
       end
 
