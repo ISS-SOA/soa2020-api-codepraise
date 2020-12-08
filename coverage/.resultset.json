@@ -24,6 +24,8 @@
           1,
           1,
           1,
+          1,
+          1,
           null,
           1,
           null,
@@ -40,12 +42,24 @@
           null,
           1,
           0,
-          0,
-          0,
+          null,
+          null,
+          null,
           null,
           null,
           1,
           null,
+          null,
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          0,
+          0,
+          0,
           null,
           null,
           1,
@@ -1330,7 +1344,7 @@
           null,
           1,
           1,
-          3,
+          4,
           null
         ]
       },
@@ -1750,6 +1764,41 @@
           194,
           null,
           null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "/Users/soumyaray/Sync/Dropbox/ossdev/classes/SOA-class/soa2020/api-codepraise2020/app/infrastructure/cache/init.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          2,
+          null
+        ]
+      },
+      "/Users/soumyaray/Sync/Dropbox/ossdev/classes/SOA-class/soa2020/api-codepraise2020/app/infrastructure/cache/redis_cache.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          null,
+          1,
+          1,
+          null,
+          1,
+          1,
+          0,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          0,
           null,
           null,
           null,
@@ -2483,6 +2532,8 @@
           6,
           4,
           null,
+          4,
+          null,
           null,
           null,
           4,
@@ -2592,8 +2643,8 @@
           null,
           1,
           27,
-          1899,
-          1899,
+          1833,
+          1833,
           null,
           null,
           27,
@@ -3161,6 +3212,6 @@
         ]
       }
     },
-    "timestamp": 1607179081
+    "timestamp": 1607260549
   }
 }

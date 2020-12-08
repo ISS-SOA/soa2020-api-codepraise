@@ -15,7 +15,7 @@ AllCops:
 Metrics/BlockLength:
   Enabled: true
   Exclude:
-    - app/controllers/**/*.rb # Roda's nested controllers require large blocks
+    - app/application/controllers/*.rb # Roda's nested controllers require large blocks
     - spec/**/* # Minitest's nested test structure requires large blocks
     - Rakefile # Rake namespaces produce large blocks
 
