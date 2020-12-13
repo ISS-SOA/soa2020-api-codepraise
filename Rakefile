@@ -15,6 +15,7 @@ end
 # NOTE: run `rake run:test` in another process
 desc 'Run acceptance tests'
 Rake::TestTask.new(:spec_accept) do |t|
+  puts 'Make sure worker is running in separate process'
   t.pattern = 'spec/tests_acceptance/*_acceptance.rb'
   t.warning = false
 end
@@ -101,9 +102,9 @@ end
 
 namespace :cache do
   task :config do
-    require_relative 'config/environment.rb' # load config info
-    require_relative 'app/infrastructure/cache/init.rb' # load cache client
-    @api = CodePraise::Api
+    require_relative 'config/environment' # load config info
+    require_relative 'app/infrastructure/cache/init' # load cache client
+    @api = CodePraise::App
   end
 
   desc 'Directory listing of local dev cache'
@@ -139,6 +140,75 @@ namespace :cache do
         wiped = CodePraise::Cache::Client.new(@api.config).wipe
         wiped.each_key { |key| puts "Wiped: #{key}" }
       end
+    end
+  end
+end
+
+namespace :queues do
+  task :config do
+    require 'aws-sdk-sqs'
+    require_relative 'config/environment' # load config info
+    @api = CodePraise::App
+
+    @sqs = Aws::SQS::Client.new(
+      access_key_id: @api.config.AWS_ACCESS_KEY_ID,
+      secret_access_key: @api.config.AWS_SECRET_ACCESS_KEY,
+      region: @api.config.AWS_REGION
+    )
+  end
+
+  desc 'Create SQS queue for worker'
+  task :create => :config do
+    puts "Environment: #{@api.environment}"
+    @sqs.create_queue(queue_name: @api.config.CLONE_QUEUE)
+
+    q_url = @sqs.get_queue_url(queue_name: @api.config.CLONE_QUEUE).queue_url
+    puts 'Queue created:'
+    puts "  Name: #{@api.config.CLONE_QUEUE}"
+    puts "  Region: #{@api.config.AWS_REGION}"
+    puts "  URL: #{q_url}"
+  rescue StandardError => e
+    puts "Error creating queue: #{e}"
+  end
+
+  desc 'Report status of queue for worker'
+  task :status => :config do
+    q_url = @sqs.get_queue_url(queue_name: @api.config.CLONE_QUEUE).queue_url
+
+    puts "Environment: #{@api.environment}"
+    puts 'Queue info:'
+    puts "  Name: #{@api.config.CLONE_QUEUE}"
+    puts "  Region: #{@api.config.AWS_REGION}"
+    puts "  URL: #{q_url}"
+  rescue StandardError => e
+    puts "Error finding queue: #{e}"
+  end
+
+  desc 'Purge messages in SQS queue for worker'
+  task :purge => :config do
+    q_url = @sqs.get_queue_url(queue_name: @api.config.CLONE_QUEUE).queue_url
+    @sqs.purge_queue(queue_url: q_url)
+    puts "Queue #{queue_name} purged"
+  rescue StandardError => e
+    puts "Error purging queue: #{e}"
+  end
+end
+
+namespace :worker do
+  namespace :run do
+    desc 'Run the background cloning worker in development mode'
+    task :dev => :config do
+      sh 'RACK_ENV=development bundle exec shoryuken -r ./workers/git_clone_worker.rb -C ./workers/shoryuken_dev.yml'
+    end
+
+    desc 'Run the background cloning worker in testing mode'
+    task :test => :config do
+      sh 'RACK_ENV=test bundle exec shoryuken -r ./workers/git_clone_worker.rb -C ./workers/shoryuken_test.yml'
+    end
+
+    desc 'Run the background cloning worker in production mode'
+    task :production => :config do
+      sh 'RACK_ENV=production bundle exec shoryuken -r ./workers/git_clone_worker.rb -C ./workers/shoryuken.yml'
     end
   end
 end

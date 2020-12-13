@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'fileutils'
-require_relative 'remote_repo'
+require_relative 'remote_repo.rb'
 
 module CodePraise
   module Git
@@ -25,29 +25,29 @@ module CodePraise
       end
 
       def clone_remote
-        @remote.local_clone(@git_repo_path) { |line| yield line if block_given? }
+        @remote.local_clone(@git_repo_path) do |line|
+          yield line if block_given?
+        end
         self
       end
 
-      # TODO: simplify this beast of a method. but for now...
-      # rubocop:disable all
+      def directory_exists?(dir_name)
+        in_repo do
+          Dir.exist? dir_name
+        end
+      end
+
       def folder_structure
         raise_unless_setup
-        return @folder_structure if @folder_structure
 
-        @folder_structure = { '/' => [] }
-        in_repo do
-          all_folders = Dir.glob(ONLY_FOLDERS)
-          all_folders.each do |full_path|
+        @folder_structure ||= in_repo do
+          Dir.glob(ONLY_FOLDERS).reduce('/' => []) do |structure, full_path|
             parts = full_path.split('/')
-            parent = (parts.length == 1) ? '/' : parts[0..-2].join('/')
-            (@folder_structure[parent] ||= []).push(full_path)
+            parent = parts.length.equal?(1) ? '/' : parts[0..-2].join('/')
+            (structure[parent] ||= []).push(full_path)
           end
         end
-
-        @folder_structure
       end
-      # rubocop:enable all
 
       def files
         raise_unless_setup
@@ -69,7 +69,7 @@ module CodePraise
         Dir.exist? @git_repo_path
       end
 
-      def delete!
+      def delete
         FileUtils.rm_rf(@git_repo_path)
       end
 

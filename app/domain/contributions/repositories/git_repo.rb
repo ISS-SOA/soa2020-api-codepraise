@@ -11,9 +11,9 @@ module CodePraise
       CannotOverwriteLocalGitRepo = Class.new(StandardError)
     end
 
-    def initialize(repo, config = CodePraise::App.config)
-      @repo = repo
-      remote = Git::RemoteGitRepo.new(@repo.http_url)
+    def initialize(project, config = CodePraise::App.config)
+      @project = project
+      remote = Git::RemoteGitRepo.new(project.http_url)
       @local = Git::LocalGitRepo.new(remote, config.REPOSTORE_PATH)
     end
 
@@ -21,8 +21,8 @@ module CodePraise
       exists_locally? ? @local : raise(Errors::NoGitRepoFound)
     end
 
-    def delete!
-      @local.delete!
+    def delete
+      @local.delete
     end
 
     def exists_locally?
@@ -30,7 +30,7 @@ module CodePraise
     end
 
     def clone!
-      raise Errors::TooLargeToClone if @repo.too_large?
+      raise Errors::TooLargeToClone if @project.too_large?
       raise Errors::CannotOverwriteLocalGitRepo if exists_locally?
 
       @local.clone_remote { |line| yield line if block_given? }
