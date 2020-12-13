@@ -184,6 +184,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  concurrent-ruby (~> 1.1)
   database_cleaner (~> 1.8)
   debase (~> 0.2)
   dry-monads

@@ -33,6 +33,9 @@ gem 'dry-types', '~> 1.4'
 # Networking
 gem 'http', '~> 4.0'
 
+# Asynchronicity
+gem 'concurrent-ruby', '~> 1.1'
+
 # Database
 gem 'hirb', '~> 0.7'
 gem 'sequel', '~> 5.0'
