@@ -1,2 +1,2 @@
 queues:
-  - https://sqs.us-east-1.amazonaws.com/503315808870/soa-codepraise-clone-test
+  - https://sqs.us-east-1.amazonaws.com/503315808870/soa-codepraise-clone-production
