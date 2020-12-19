@@ -21,6 +21,7 @@ jobs:
     strategy:
       # don't cancel other jobs if one fails
       fail-fast: false
+      max-parallel: 1
       matrix:
         os: [ubuntu, macos]
     runs-on: ${{ matrix.os }}-latest  # Runs on latest builds of matrix OSes
@@ -41,4 +42,10 @@ jobs:
       - name: Run all specs
         env: # define secrets in Github project -> settings -> secrets
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: bundle exec rake spec
+          CLONE_QUEUE_URL: ${{ secrets.CLONE_QUEUE_URL }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          rake worker:run:test &
+          bundle exec rake spec

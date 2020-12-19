@@ -2,7 +2,7 @@
 
 module CodePraise
   module Entity
-    # Aggregate root for contributions domain
+    # Entity for folder contributions
     class FolderContributions < SimpleDelegator
       include Mixins::ContributionsCalculator
 
@@ -31,7 +31,7 @@ module CodePraise
 
       def base_files
         @base_files ||= files.select do |file|
-          file.file_path.directory == folder_path
+          file.file_path.directory == comparitive_path
         end
       end
 
@@ -40,7 +40,7 @@ module CodePraise
 
         folders = nested_files
           .each_with_object(Types::HashedArrays.new) do |nested, lookup|
-            subfolder = nested.file_path.folder_after(folder_path)
+            subfolder = nested.file_path.folder_after(comparitive_path)
             lookup[subfolder] << nested
           end
 
@@ -67,8 +67,8 @@ module CodePraise
 
       private
 
-      def folder_path
-        path.empty? ? path : "#{path}/"
+      def comparitive_path
+        path.empty? ? path : path + '/'
       end
 
       def nested_files

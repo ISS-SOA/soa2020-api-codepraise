@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'roda'
+require_relative 'lib/init'
 
 module CodePraise
   # Web App
@@ -30,7 +31,7 @@ module CodePraise
           routing.on String, String do |owner_name, project_name|
             # GET /projects/{owner_name}/{project_name}[/folder_namepath/]
             routing.get do
-              response.cache_control public: true, max_age: 3600
+              Cache::Control.new(response).turn_on if Env.new(App).production?
 
               path_request = Request::ProjectPath.new(
                 owner_name, project_name, request
@@ -38,17 +39,7 @@ module CodePraise
 
               result = Service::AppraiseProject.new.call(requested: path_request)
 
-              if result.failure?
-                failed = Representer::HttpResponse.new(result.failure)
-                routing.halt failed.http_status_code, failed.to_json
-              end
-
-              http_response = Representer::HttpResponse.new(result.value!)
-              response.status = http_response.http_status_code
-
-              Representer::ProjectFolderContributions.new(
-                result.value!.message
-              ).to_json
+              Representer::For.new(result).status_and_body(response)
             end
 
             # POST /projects/{owner_name}/{project_name}
@@ -57,14 +48,7 @@ module CodePraise
                 owner_name: owner_name, project_name: project_name
               )
 
-              if result.failure?
-                failed = Representer::HttpResponse.new(result.failure)
-                routing.halt failed.http_status_code, failed.to_json
-              end
-
-              http_response = Representer::HttpResponse.new(result.value!)
-              response.status = http_response.http_status_code
-              Representer::Project.new(result.value!.message).to_json
+              Representer::For.new(result).status_and_body(response)
             end
           end
 
@@ -74,14 +58,7 @@ module CodePraise
               list_req = Request::EncodedProjectList.new(routing.params)
               result = Service::ListProjects.new.call(list_request: list_req)
 
-              if result.failure?
-                failed = Representer::HttpResponse.new(result.failure)
-                routing.halt failed.http_status_code, failed.to_json
-              end
-
-              http_response = Representer::HttpResponse.new(result.value!)
-              response.status = http_response.http_status_code
-              Representer::ProjectsList.new(result.value!.message).to_json
+              Representer::For.new(result).status_and_body(response)
             end
           end
         end

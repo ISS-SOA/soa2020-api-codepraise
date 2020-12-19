@@ -6,20 +6,19 @@ module CodePraise
   module Git
     # Git contributions report parsing and reporting services
     class BlameReporter
+      NOT_FOUND_ERROR_MSG = 'Folder not found'
+
       def initialize(gitrepo)
         @local = gitrepo.local
       end
 
       def folder_report(folder_name)
         folder_name = '' if folder_name == '/'
-        files = @local.files.select { |file| file.start_with? folder_name }
-        raise('no files found in folder') if files.empty?
+        raise not_found_error(folder_name) unless folder_exists?(folder_name)
 
-        @local.in_repo do
-          files.map do |filename|
-            [filename, file_report(filename)]
-          end
-        end
+        filenames = @local.files.select { _1.start_with? folder_name }
+
+        @local.in_repo { analyze_files_concurrently(filenames) }
       end
 
       def files(folder_name)
@@ -36,6 +35,32 @@ module CodePraise
 
       def file_report(filename)
         Git::RepoFile.new(filename).blame
+      end
+
+      private
+
+      def folder_exists?(folder_name)
+        return true if folder_name.empty?
+
+        @local.in_repo { Dir.exist? folder_name }
+      end
+
+      def not_found_error(folder_name)
+        "#{NOT_FOUND_ERROR_MSG} (#{folder_name})"
+      end
+
+      # synchronous reporting of a list of files
+      def analyze_files(filenames)
+        filenames.map { |fname| [fname, file_report(fname)] }
+      end
+
+      # asynchronous reporting of a list of files
+      def analyze_files_concurrently(filenames)
+        filenames.map do |fname|
+          Concurrent::Promise
+            .execute { file_report(fname) }
+            .then { |freport| [fname, freport] }
+        end.map(&:value)
       end
     end
   end
