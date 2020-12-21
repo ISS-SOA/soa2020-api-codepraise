@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative '../responses/init'
 require_relative 'projects_representer'
 require_relative 'project_folder_contributions_representer'
 require_relative 'project_representer'

@@ -33,11 +33,17 @@ module CodePraise
             routing.get do
               Cache::Control.new(response).turn_on if Env.new(App).production?
 
+              request_id = [request.env, request.path, Time.now.to_f].hash
+
               path_request = Request::ProjectPath.new(
                 owner_name, project_name, request
               )
 
-              result = Service::AppraiseProject.new.call(requested: path_request)
+              result = Service::AppraiseProject.new.call(
+                requested: path_request,
+                request_id: request_id,
+                config: App.config
+              )
 
               Representer::For.new(result).status_and_body(response)
             end

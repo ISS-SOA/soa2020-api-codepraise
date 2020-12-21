@@ -36,7 +36,6 @@ gem 'http', '~> 4.0'
 # Asynchronicity
 gem 'concurrent-ruby', '~> 1.1'
 gem 'aws-sdk-sqs', '~> 1'
-gem 'shoryuken', '~> 5'
 
 # Database
 gem 'hirb', '~> 0.7'
@@ -50,6 +49,10 @@ end
 group :production do
   gem 'pg', '~> 1.2'
 end
+
+# WORKERS
+gem 'shoryuken', '~> 5'
+gem 'faye', '~> 1'
 
 # TESTING
 group :test do
