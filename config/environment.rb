@@ -28,6 +28,7 @@ module CodePraise
 
     configure :production do
       # Set DATABASE_URL environment variable on production platform
+      puts 'RUNNING IN PRODUCTION MODE'
 
       use Rack::Cache,
           verbose: true,
